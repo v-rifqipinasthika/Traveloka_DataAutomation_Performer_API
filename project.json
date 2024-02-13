@@ -12,6 +12,7 @@
     "UiPath.System.Activities": "[22.10.4]",
     "UiPath.Testing.Activities": "[22.10.3]",
     "UiPath.UIAutomation.Activities": "[22.10.5]",
+    "UiPath.WebAPI.Activities": "[1.18.0]",
     "UiPathTeam.ReadSavedEmailToObject.Activities": "[2.0.0.11]"
   },
   "webServices": [],

@@ -1,4 +1,3 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Activity mc:Ignorable="sap sap2010" x:Class="Add_Queue_Retry" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_TransactionItem" Type="InArgument(ui:QueueItem)" />
@@ -7,7 +6,7 @@
   <VisualBasic.Settings>
     <x:Null />
   </VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>845.6,2396.8</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>927.2,2396.8</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Add_Queue_Retry_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
@@ -100,16 +99,8 @@
       <Variable x:TypeArguments="x:Int32" Name="intAutoRetryPostpone" />
       <Variable x:TypeArguments="s:DateTime" Name="dateStartPeriod" />
       <Variable x:TypeArguments="s:DateTime" Name="dateEndPeriod" />
-      <Variable x:TypeArguments="x:Boolean" Name="isCreate">
-        <Variable.Default>
-          <Literal x:TypeArguments="x:Boolean" Value="True" />
-        </Variable.Default>
-      </Variable>
-      <Variable x:TypeArguments="x:Boolean" Name="isPostponeNextDay">
-        <Variable.Default>
-          <Literal x:TypeArguments="x:Boolean" />
-        </Variable.Default>
-      </Variable>
+      <Variable x:TypeArguments="x:Boolean" Default="True" Name="isCreate" />
+      <Variable x:TypeArguments="x:Boolean" Default="False" Name="isPostponeNextDay" />
       <Variable x:TypeArguments="x:Int32" Name="intAutoRetryMaxDay" />
       <Variable x:TypeArguments="x:Int32" Name="intAutoRetrySchedule" />
     </Sequence.Variables>
@@ -170,29 +161,15 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:MultipleAssign>
-    <ui:InvokeCode ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="replace any date format found in string, the string should look like this -&gt; &quot;foo {yyyMM}&quot; (date format should be in between { })" Code="string pattern = @&quot;\{(\d+),(\d+)?}&quot;;&#xD;&#xA;int retriedToday = 1; // Second index&#xD;&#xA;int retriedTodayMax = in_intAutoRetryMax;&#xD;&#xA;int retriedDay = 1; // First index&#xD;&#xA;int retriedDayMax = in_intAutoRetryMaxDay;&#xD;&#xA;//string io_strQueueReference = &quot;{1,2}_airtickets-05-11-2023&quot;;&#xD;&#xA;int todayRetried = 0;&#xD;&#xA;int dayRetried = 0;&#xD;&#xA;bool isCreate = true;&#xD;&#xA;bool isPostponeNextDay = false;&#xD;&#xA;&#xD;&#xA;if (Regex.IsMatch(io_strQueueReference, pattern))&#xD;&#xA;{&#xD;&#xA;    // Use Regex.Replace with a MatchEvaluator function to increment&#xD;&#xA;    io_strQueueReference = Regex.Replace(io_strQueueReference, pattern, match =&gt;&#xD;&#xA;    {&#xD;&#xA;        Console.WriteLine($&quot;match.Groups[1]: {match.Groups[1].Value}&quot;);&#xD;&#xA;        Console.WriteLine($&quot;match.Groups[2]: {match.Groups[2].Value}&quot;);&#xD;&#xA;        int dayIndex = int.Parse(match.Groups[1].Value);&#xD;&#xA;        retriedDay = dayIndex; // Assigning the first captured group to the second index&#xD;&#xA;        if (match.Groups[2].Success)&#xD;&#xA;        {&#xD;&#xA;            int todayIndex = int.Parse(match.Groups[2].Value);&#xD;&#xA;            retriedToday = todayIndex;&#xD;&#xA;            if (retriedToday &lt; retriedTodayMax)&#xD;&#xA;            {&#xD;&#xA;                retriedToday++; // Increment the second index if it's less than its maximum value&#xD;&#xA;            }&#xD;&#xA;            else&#xD;&#xA;            {&#xD;&#xA;                retriedToday = 1; // Reset the second index to 1 if it has reached its maximum value&#xD;&#xA;                if (retriedDay &lt; retriedDayMax)&#xD;&#xA;                {&#xD;&#xA;                    retriedDay++; // Increment the first index if it's less than its maximum value&#xD;&#xA;                    isPostponeNextDay = true; // Set isPostponeNextDay to true when the first index is incremented&#xD;&#xA;                }&#xD;&#xA;                else&#xD;&#xA;                {&#xD;&#xA;                    isCreate = false; // Set isCreate to false when the first index reaches its maximum value&#xD;&#xA;                }&#xD;&#xA;            }&#xD;&#xA;            return &quot;{&quot; + retriedDay + &quot;,&quot; + retriedToday + &quot;}&quot;; // Replacing with {retriedDay, retried}&#xD;&#xA;        }&#xD;&#xA;        else&#xD;&#xA;        {&#xD;&#xA;            return &quot;{&quot; + retriedDay + &quot;}&quot;; // Replacing with {retriedDay}&#xD;&#xA;        }&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;else&#xD;&#xA;{&#xD;&#xA;    // If the pattern is not matched, add {1,1} in front of the string&#xD;&#xA;    io_strQueueReference = &quot;{1,1}_&quot; + io_strQueueReference;&#xD;&#xA;}&#xD;&#xA;// Condition added to set isCreate to false when both retriedTodayMax and retriedDayMax are 0&#xD;&#xA;if (retriedTodayMax == 0 &amp;&amp; retriedDayMax == 0)&#xD;&#xA;{&#xD;&#xA;    isCreate = false;&#xD;&#xA;}&#xD;&#xA;todayRetried = retriedToday;&#xD;&#xA;dayRetried = retriedDay;&#xD;&#xA;io_isCreate = isCreate;&#xD;&#xA;io_isPostponeNextDay = isPostponeNextDay;&#xD;&#xA;&#xD;&#xA;Console.WriteLine($&quot;todayRetried: {todayRetried}&quot;);&#xD;&#xA;Console.WriteLine($&quot;dayRetried: {dayRetried}&quot;);&#xD;&#xA;Console.WriteLine($&quot;io_strQueueReference: {io_strQueueReference}&quot;);&#xD;&#xA;Console.WriteLine($&quot;isCreate: {isCreate}&quot;);&#xD;&#xA;Console.WriteLine($&quot;isPostponeNextDay: {isPostponeNextDay}&quot;);" DisplayName="Invoke code -  replace any date format in string" sap:VirtualizedContainerService.HintSize="532,224.8" sap2010:WorkflowViewState.IdRef="InvokeCode_1" Language="CSharp">
+    <ui:InvokeCode ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="replace any date format found in string, the string should look like this -&gt; &quot;foo {yyyMM}&quot; (date format should be in between { })" Code="string pattern = @&quot;\{(\d+),(\d+)?}&quot;;&#xA;int retriedToday = 1; // Second index&#xA;int retriedTodayMax = in_intAutoRetryMax;&#xA;int retriedDay = 1; // First index&#xA;int retriedDayMax = in_intAutoRetryMaxDay;&#xA;//string io_strQueueReference = &quot;{1,2}_airtickets-05-11-2023&quot;;&#xA;int todayRetried = 0;&#xA;int dayRetried = 0;&#xA;bool isCreate = true;&#xA;bool isPostponeNextDay = false;&#xA;&#xA;if (Regex.IsMatch(io_strQueueReference, pattern))&#xA;{&#xA;    // Use Regex.Replace with a MatchEvaluator function to increment&#xA;    io_strQueueReference = Regex.Replace(io_strQueueReference, pattern, match =&gt;&#xA;    {&#xA;        Console.WriteLine($&quot;match.Groups[1]: {match.Groups[1].Value}&quot;);&#xA;        Console.WriteLine($&quot;match.Groups[2]: {match.Groups[2].Value}&quot;);&#xA;        int dayIndex = int.Parse(match.Groups[1].Value);&#xA;        retriedDay = dayIndex; // Assigning the first captured group to the second index&#xA;        if (match.Groups[2].Success)&#xA;        {&#xA;            int todayIndex = int.Parse(match.Groups[2].Value);&#xA;            retriedToday = todayIndex;&#xA;            if (retriedToday &lt; retriedTodayMax)&#xA;            {&#xA;                retriedToday++; // Increment the second index if it's less than its maximum value&#xA;            }&#xA;            else&#xA;            {&#xA;                retriedToday = 1; // Reset the second index to 1 if it has reached its maximum value&#xA;                if (retriedDay &lt; retriedDayMax)&#xA;                {&#xA;                    retriedDay++; // Increment the first index if it's less than its maximum value&#xA;                    isPostponeNextDay = true; // Set isPostponeNextDay to true when the first index is incremented&#xA;                }&#xA;                else&#xA;                {&#xA;                    isCreate = false; // Set isCreate to false when the first index reaches its maximum value&#xA;                }&#xA;            }&#xA;            return &quot;{&quot; + retriedDay + &quot;,&quot; + retriedToday + &quot;}&quot;; // Replacing with {retriedDay, retried}&#xA;        }&#xA;        else&#xA;        {&#xA;            return &quot;{&quot; + retriedDay + &quot;}&quot;; // Replacing with {retriedDay}&#xA;        }&#xA;    });&#xA;}&#xA;else&#xA;{&#xA;    // If the pattern is not matched, add {1,1} in front of the string&#xA;    io_strQueueReference = &quot;{1,1}_&quot; + io_strQueueReference;&#xA;}&#xA;// Condition added to set isCreate to false when both retriedTodayMax and retriedDayMax are 0&#xA;if (retriedTodayMax == 0 &amp;&amp; retriedDayMax == 0)&#xA;{&#xA;    isCreate = false;&#xA;}&#xA;todayRetried = retriedToday;&#xA;dayRetried = retriedDay;&#xA;io_isCreate = isCreate;&#xA;io_isPostponeNextDay = isPostponeNextDay;&#xA;&#xA;Console.WriteLine($&quot;todayRetried: {todayRetried}&quot;);&#xA;Console.WriteLine($&quot;dayRetried: {dayRetried}&quot;);&#xA;Console.WriteLine($&quot;io_strQueueReference: {io_strQueueReference}&quot;);&#xA;Console.WriteLine($&quot;isCreate: {isCreate}&quot;);&#xA;Console.WriteLine($&quot;isPostponeNextDay: {isPostponeNextDay}&quot;);" DisplayName="Invoke code -  replace any date format in string" sap:VirtualizedContainerService.HintSize="532,224.8" sap2010:WorkflowViewState.IdRef="InvokeCode_1" Language="CSharp">
       <ui:InvokeCode.Arguments>
-        <InOutArgument x:TypeArguments="x:String" x:Key="io_strQueueReference">
-          <VisualBasicReference x:TypeArguments="x:String" ExpressionText="strQueueReference" />
-        </InOutArgument>
-        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetryMax">
-          <VisualBasicValue x:TypeArguments="x:Int32" ExpressionText="intAutoRetryMax" />
-        </InArgument>
-        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetryMaxDay">
-          <VisualBasicValue x:TypeArguments="x:Int32" ExpressionText="intAutoRetryMaxDay" />
-        </InArgument>
-        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetryPostpone">
-          <VisualBasicValue x:TypeArguments="x:Int32" ExpressionText="intAutoRetryPostpone" />
-        </InArgument>
-        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetrySchedule">
-          <VisualBasicValue x:TypeArguments="x:Int32" ExpressionText="intAutoRetrySchedule" />
-        </InArgument>
-        <InOutArgument x:TypeArguments="x:Boolean" x:Key="io_isCreate">
-          <VisualBasicReference x:TypeArguments="x:Boolean" ExpressionText="isCreate" />
-        </InOutArgument>
-        <InOutArgument x:TypeArguments="x:Boolean" x:Key="io_isPostponeNextDay">
-          <VisualBasicReference x:TypeArguments="x:Boolean" ExpressionText="isPostponeNextDay" />
-        </InOutArgument>
+        <InOutArgument x:TypeArguments="x:String" x:Key="io_strQueueReference">[strQueueReference]</InOutArgument>
+        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetryMax">[intAutoRetryMax]</InArgument>
+        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetryMaxDay">[intAutoRetryMaxDay]</InArgument>
+        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetryPostpone">[intAutoRetryPostpone]</InArgument>
+        <InArgument x:TypeArguments="x:Int32" x:Key="in_intAutoRetrySchedule">[intAutoRetrySchedule]</InArgument>
+        <InOutArgument x:TypeArguments="x:Boolean" x:Key="io_isCreate">[isCreate]</InOutArgument>
+        <InOutArgument x:TypeArguments="x:Boolean" x:Key="io_isPostponeNextDay">[isPostponeNextDay]</InOutArgument>
       </ui:InvokeCode.Arguments>
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -225,7 +202,7 @@
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
-                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Get_EmailDate_Asset.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="378.4,113.6" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Custom_Workflow\Get_Date_Asset.xaml">
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Get_EmailDate_Asset.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="378.4,113.6" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Custom_Workflow\Get_EmailDate_Asset.xaml">
                   <ui:InvokeWorkflowFile.Arguments>
                     <InArgument x:TypeArguments="x:String" x:Key="in_strAssetName">[in_Config("GlobalVarAsset").ToString]</InArgument>
                     <OutArgument x:TypeArguments="s:DateTime" x:Key="out_dateStartPeriod">[dateStartPeriod]</OutArgument>
@@ -272,7 +249,7 @@
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
-                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Get_EmailDate_Asset.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="378.4,113.6" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Custom_Workflow\Get_Date_Asset.xaml">
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Get_EmailDate_Asset.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="378.4,113.6" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Custom_Workflow\Get_EmailDate_Asset.xaml">
                   <ui:InvokeWorkflowFile.Arguments>
                     <InArgument x:TypeArguments="x:String" x:Key="in_strAssetName">[in_Config("GlobalVarAsset").ToString]</InArgument>
                     <OutArgument x:TypeArguments="s:DateTime" x:Key="out_dateStartPeriod">[dateStartPeriod]</OutArgument>
