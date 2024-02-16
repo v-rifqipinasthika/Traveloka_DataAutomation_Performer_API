@@ -9,7 +9,7 @@
   <VisualBasic.Settings>
     <x:Null />
   </VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>927.2,1359.2</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1072.8,1359.2</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Amadeus_TJQ_GetReport_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
@@ -119,22 +119,28 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
       <If.Then>
-        <Sequence sap:VirtualizedContainerService.HintSize="376.8,170.4" sap2010:WorkflowViewState.IdRef="Sequence_2">
+        <Sequence sap:VirtualizedContainerService.HintSize="400,192.8" sap2010:WorkflowViewState.IdRef="Sequence_2">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
-          <ui:CreateDirectory ContinueOnError="{x:Null}" Output="{x:Null}" DisplayName="Create Folder Current Period" sap:VirtualizedContainerService.HintSize="333.6,80.8" sap2010:WorkflowViewState.IdRef="CreateDirectory_1" Path="[Path.GetDirectoryName(in_pathResult)]" />
+          <ui:CreateDirectory ContinueOnError="{x:Null}" Output="{x:Null}" DisplayName="Create Folder Current Period" sap:VirtualizedContainerService.HintSize="337.6,80.8" sap2010:WorkflowViewState.IdRef="CreateDirectory_1" Path="[Path.GetDirectoryName(in_pathResult)]" />
         </Sequence>
       </If.Then>
       <If.Else>
-        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3" />
+        <Sequence sap:VirtualizedContainerService.HintSize="400,104.8" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+        </Sequence>
       </If.Else>
     </If>
     <TryCatch DisplayName="Try Catch Get Report Result" sap:VirtualizedContainerService.HintSize="436.8,396" sap2010:WorkflowViewState.IdRef="TryCatch_1">
       <TryCatch.Try>
-        <ui:InvokeCode ContinueOnError="{x:Null}" Code="// Assuming soapResponse contains your SOAP API response XML as a string&#xA;string soapResponse = in_response;&#xA;&#xA;// Load the XML string into an XDocument&#xA;XDocument xdoc = XDocument.Parse(soapResponse);&#xA;&#xA;// Find the &quot;textStringDetails&quot; element within the &quot;Command_CrypticReply&quot;&#xA;var textStringDetailsElement = xdoc.Descendants(&quot;{http://xml.amadeus.com/HSFRES_07_3_1A}Command_CrypticReply&quot;)&#xA;                                   .Elements(&quot;{http://xml.amadeus.com/HSFRES_07_3_1A}longTextString&quot;)&#xA;                                   .Elements(&quot;{http://xml.amadeus.com/HSFRES_07_3_1A}textStringDetails&quot;)&#xA;                                   .FirstOrDefault();&#xA;&#xA;// Check if the element is found&#xA;if (textStringDetailsElement != null)&#xA;{&#xA;    // Get the value within the &quot;textStringDetails&quot; element&#xA;    string textStringDetailsValue = textStringDetailsElement.Value;&#xA;&#xA;    // Now you can use the extracted value as needed&#xA;    // For example, print it to the Output panel&#xA;    Console.WriteLine(&quot;textStringDetailsValue: &quot; + textStringDetailsValue);&#xA;&#x9;out_finalResult = textStringDetailsValue;&#xA;}&#xA;else&#xA;{&#xA;    // Handle the case where the element is not found&#xA;    Console.WriteLine(&quot;textStringDetails element not found in SOAP response&quot;);&#xA;}" DisplayName="Invoke Code Get Report Result" sap:VirtualizedContainerService.HintSize="333.6,164.8" sap2010:WorkflowViewState.IdRef="InvokeCode_1" Language="CSharp">
+        <ui:InvokeCode ContinueOnError="{x:Null}" Code="// Assuming soapResponse contains your SOAP API response XML as a string&#xD;&#xA;string soapResponse = in_response;&#xD;&#xA;&#xD;&#xA;// Load the XML string into an XDocument&#xD;&#xA;XDocument xdoc = XDocument.Parse(soapResponse);&#xD;&#xA;&#xD;&#xA;// Find the &quot;textStringDetails&quot; element within the &quot;Command_CrypticReply&quot;&#xD;&#xA;var textStringDetailsElement = xdoc.Descendants(&quot;{http://xml.amadeus.com/HSFRES_07_3_1A}Command_CrypticReply&quot;)&#xD;&#xA;                                   .Elements(&quot;{http://xml.amadeus.com/HSFRES_07_3_1A}longTextString&quot;)&#xD;&#xA;                                   .Elements(&quot;{http://xml.amadeus.com/HSFRES_07_3_1A}textStringDetails&quot;)&#xD;&#xA;                                   .FirstOrDefault();&#xD;&#xA;&#xD;&#xA;// Check if the element is found&#xD;&#xA;if (textStringDetailsElement != null)&#xD;&#xA;{&#xD;&#xA;    // Get the value within the &quot;textStringDetails&quot; element&#xD;&#xA;    string textStringDetailsValue = textStringDetailsElement.Value;&#xD;&#xA;&#xD;&#xA;    // Now you can use the extracted value as needed&#xD;&#xA;    // For example, print it to the Output panel&#xD;&#xA;    //Console.WriteLine(&quot;textStringDetailsValue: &quot; + textStringDetailsValue);&#xD;&#xA;&#x9;out_finalResult = textStringDetailsValue;&#xD;&#xA;}&#xD;&#xA;else&#xD;&#xA;{&#xD;&#xA;    // Handle the case where the element is not found&#xD;&#xA;    Console.WriteLine(&quot;textStringDetails element not found in SOAP response&quot;);&#xD;&#xA;}" DisplayName="Invoke Code Get Report Result" sap:VirtualizedContainerService.HintSize="333.6,164.8" sap2010:WorkflowViewState.IdRef="InvokeCode_1" Language="CSharp">
           <ui:InvokeCode.Arguments>
             <InArgument x:TypeArguments="x:String" x:Key="in_response">[in_resContent]</InArgument>
             <OutArgument x:TypeArguments="x:String" x:Key="out_finalResult">[rawReport]</OutArgument>
