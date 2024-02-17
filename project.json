@@ -1,5 +1,6 @@
 {
   "name": "Traveloka_DataAutomation_Performer_API",
+  "projectId": "1cb06821-fbef-4fe0-87ed-5da226dbbd2f",
   "description": "Robotic Enterprise Framework",
   "main": "Main.xaml",
   "dependencies": {
@@ -26,6 +27,7 @@
     "isAttended": false,
     "requiresUserInteraction": true,
     "supportsPersistence": false,
+    "workflowSerialization": "DataContract",
     "excludedLoggedData": [
       "Private:*",
       "*password*"
@@ -90,7 +92,8 @@
         "fileName": "Tests\\WorkflowTestCaseTemplate.xaml"
       }
     ],
-    "modernBehavior": false
+    "modernBehavior": false,
+    "saveToCloud": false
   },
   "expressionLanguage": "VisualBasic",
   "entryPoints": [
